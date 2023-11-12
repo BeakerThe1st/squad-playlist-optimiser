@@ -1,8 +1,3 @@
-
-//How good is ts being static!
-const TrackFeatureKeys = ["acousticness", "danceability", "duration_ms",
-    "energy", "liveness", "loudness", "mode", "speechiness", "tempo", "time_signature",
-    "valence"];
 interface TrackFeatures {
     acousticness: number,
     danceability: number,
