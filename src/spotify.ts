@@ -24,7 +24,6 @@ export const getPlaylistTracks = async () => {
         offset += 50;
     }
 
-    tracks.push(new Track("11dFghVXANMlKmJXsNCbNl", "Funkytown", ""));
 
     return tracks;
 }
