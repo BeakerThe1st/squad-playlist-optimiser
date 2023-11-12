@@ -28,7 +28,7 @@ export class Track {
         if (!features) {
             return false;
         }
-        return features.valence > 0.75 && features.speechiness < 0.66 && features.energy > 0.2 && features.danceability > 0.33 && features.duration_ms < 450000;
+        return features.valence > 0.75 && features.speechiness < 0.66 && features.energy > 0.35 && features.danceability > 0.40 && features.duration_ms < 450000;
     }
 
     toString() {
