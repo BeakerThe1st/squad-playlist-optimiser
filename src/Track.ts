@@ -16,11 +16,14 @@ export class Track {
     added_by: string;
     id: string;
     name: string;
-    features?: TrackFeatures
-    constructor(id: string, name: string, added_by: string) {
+    uri: string;
+    features?: TrackFeatures;
+
+    constructor(id: string, name: string, added_by: string, uri: string) {
         this.id = id;
         this.name = name;
         this.added_by = added_by;
+        this.uri = uri;
     }
 
     isGood() {

@@ -1,8 +1,9 @@
-import fs from 'fs';
-import express from 'express';
-const server = express();
+import fs from "fs";
+import express from "express";
 import {getEnvVar} from "./env";
-import {getPlaylistTracks, populateTrackFeatures} from "./spotify";
+import {createPlaylist, getPlaylistTracks, populateTrackFeatures} from "./spotify";
+
+const server = express();
 
 const getServerPort = () => {
     if (process.env.PORT) {
@@ -29,13 +30,26 @@ const run = async () => {
     console.log(`Analysing tracks...`);
     for (const track of populated) {
         if (track.isGood()) {
-            goodSongs.push(`${track.name} added by ${track.added_by}`);
+            goodSongs.push(track);
         }
     }
     console.log(`Selected ${goodSongs.length} tracks, writing them to goodsongs.json`);
-    fs.writeFileSync('./goodsongs.json', JSON.stringify(goodSongs, null, 2));
-    console.log (`done :)`);
-
+    fs.writeFileSync("./goodsongs.json", JSON.stringify(goodSongs.map((track) => track.toString()), null, 2));
+    console.log(`Creating a playlist with them`);
+    const playlistUrl = await createPlaylist(goodSongs);
+    console.log(`${playlistUrl}`);
+    const blameMap = new Map<string, number>();
+    for (const track of goodSongs) {
+        let count = blameMap.get(track.added_by) ?? 0;
+        count++;
+        blameMap.set(track.added_by, count);
+    }
+    console.log(`Blame:`);
+    for (const [key, value] of blameMap) {
+        console.log(`${key}: ${value}`);
+    }
+    console.log(`done :)`);
+    process.exit(0);
 }
 
 //OAuth 2.0 server stuff below here
@@ -60,7 +74,6 @@ server.get('/', async (req, res) => {
         res.status(500).send("Error fetching an access token");
         throw new Error(json);
     }
-    console.log(json);
     TokenCache.token = json.access_token;
     TokenCache.expires_at = Date.now() + json.expires_at;
     res.status(200).send("Saved access token, you may now close this tab :)");
