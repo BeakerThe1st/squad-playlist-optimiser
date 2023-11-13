@@ -2,6 +2,7 @@ import fs from "fs";
 import express from "express";
 import {getEnvVar} from "./env";
 import {createPlaylist, getPlaylistTracks, populateTrackFeatures} from "./spotify";
+import { userMap } from "./userMap";
 
 const server = express();
 
@@ -46,7 +47,7 @@ const run = async () => {
     }
     console.log(`Blame:`);
     for (const [key, value] of blameMap) {
-        console.log(`${key}: ${value}`);
+        console.log(`${userMap.get(key)?.name ?? key}: ${value}`);
     }
     console.log(`done :)`);
     process.exit(0);

@@ -1,6 +1,7 @@
 import {BASE_URL, PLAYLIST_ID} from "./globals";
 import {fetchAccessToken} from "./index";
 import {Track} from "./Track";
+import { userMap } from './userMap';
 
 const getAuthHeader = async (): Promise<[string, string]> => ["Authorization", `Bearer ${await fetchAccessToken()}`];
 export const getPlaylistTracks = async () => {
@@ -25,8 +26,6 @@ export const getPlaylistTracks = async () => {
         console.log(`Fetching tracks [${offset}, ${offset + json.items.length - 1}]`);
         offset += 50;
     }
-
-
     return tracks;
 }
 
@@ -57,7 +56,7 @@ export const getUserId = async () => {
 };
 
 export const createPlaylist = async (tracks: Track[]) => {
-    const response = await fetch(`${BASE_URL}/users/${await getUserId()}/playlists`, {
+    /*const response = await fetch(`${BASE_URL}/users/${await getUserId()}/playlists`, {
         method: "POST",
         headers: [await getAuthHeader()],
         body: JSON.stringify({
@@ -68,8 +67,23 @@ export const createPlaylist = async (tracks: Track[]) => {
         }),
     });
     const json = await response.json();
-    const {id} = json;
-    console.log(`Created optimised playlist with id ${id}`);
+    const {id} = json;*/
+    const id = "4q6yLuYQgIXsjAjM18Jr3C";
+    console.log(`Optimised playlist id: ${id}`);
+    console.log(`Grouping fetched tracks by who added them...`);
+    const tracksByAddedBy = new Map<string, Track[]>;
+    for (const track of tracks) {
+        const value = tracksByAddedBy.get(track.added_by) ?? [(userMap.get(track.added_by)?.headerTrack) ?? new Track("1V8nT86qgiQ1glQ916UIk7", "The Poop Song", "group", "spotify:track:1V8nT86qgiQ1glQ916UIk7")];
+        value.push(track);
+        tracksByAddedBy.set(track.added_by, value);
+    }
+    const groupedTracks: Track[] = [];
+    for (const [, value] of tracksByAddedBy) {
+        for (const track of value) {
+            groupedTracks.push(track);
+        }
+    }
+    tracks = groupedTracks;
     const uris = tracks.map((track) => track.uri);
     for (let i = 0; i < uris.length; i += 100) {
         const slice = uris.slice(i, i + 100);
