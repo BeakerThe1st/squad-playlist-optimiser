@@ -128,3 +128,6 @@ dist
 
 # Output
 goodsongs.json
+
+# userMap
+src/userMap.ts
