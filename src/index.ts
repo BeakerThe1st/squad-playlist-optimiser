@@ -47,7 +47,7 @@ const run = async () => {
     }
     console.log(`Blame:`);
     for (const [key, value] of blameMap) {
-        console.log(`${userMap.get(key)?.name ?? key}: ${value}`);
+        console.log(`   ${userMap.get(key)?.name ?? key}: ${value}`);
     }
     console.log(`done :)`);
     process.exit(0);
