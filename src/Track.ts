@@ -12,6 +12,11 @@ interface TrackFeatures {
     valence: number,
 }
 
+const hardcodedGoodTrackIDs = [
+    "2XVQdI3m0giGxNrwUhV3yP" /* funkytown */,
+    "2TaEdRMgOFTJi5itYlIelB" /* adrienne */
+];
+
 export class Track {
     added_by: string;
     id: string;
@@ -30,6 +35,9 @@ export class Track {
         const { features } = this;
         if (!features) {
             return false;
+        }
+        if (hardcodedGoodTrackIDs.includes(this.id)) {
+            return true;
         }
         return features.valence > 0.75 && features.speechiness < 0.66 && features.energy > 0.35 && features.danceability > 0.40 && features.duration_ms < 450000;
     }
